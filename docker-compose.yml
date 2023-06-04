@@ -1,0 +1,40 @@
+version: '3'
+services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - 8080:8080
+    environment:
+      - NODE_ENV=production
+    volumes:
+      - ./frontend:/app
+    depends_on:
+      - server
+
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    ports:
+      - 3000:3000
+    environment:
+      - NODE_ENV=production
+      - DB_HOST=mongodb
+      - DB_PORT=27017
+      - DB_NAME=mongoose_db
+      - COUNTRIES_COLLECTION=countries
+      - STATES_COLLECTION=states
+      - CITIES_COLLECTION=cities
+    volumes:
+      - ./server:/app
+    depends_on:
+      - mongodb
+
+  mongodb:
+    image: mongo
+    ports:
+      - 27017:27017
+    volumes:
+      - ./data/db:/data/db

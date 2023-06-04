@@ -1,8 +1,19 @@
-# Використовуємо базовий образ Node.js з Yarn
 FROM node:14-alpine
 
-# Копіюємо .env файл у контейнер
-COPY .env .env
+RUN apk add --no-cache yarn
 
-# Запускаємо команду для запуску проекту
-CMD ["sh", "-c", "yarn && yarn serve"]
+WORKDIR /app
+
+COPY package*.json yarn.lock ./
+
+RUN yarn install
+
+RUN yarn global add @vue/cli
+
+COPY . .
+
+COPY .env* ./
+
+RUN yarn build
+
+CMD [ "yarn", "serve" ]

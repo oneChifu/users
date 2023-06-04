@@ -1,12 +1,14 @@
 {
   "name": "server",
   "version": "1.0.0",
-  "description": "Test app for Nest.js + Mongoose + MongoDB",
+  "description": "Simple app Nest.js + Mongoose + MongoDB",
+  "dotenv_config_path": ".env",
   "scripts": {
     "dev": "nest start --watch",
     "start": "node dist/main.js",
     "start:prod": "node dist/main.js",
-    "build": "nest build"
+    "build": "nest build",
+    "migrate": "dotenv -e ./.env mongodb-migrate -db mongodb://$DB_HOST:$DB_PORT/$DB_NAME -m ./migrations"
   },
   "keywords": [],
   "author": "Pavlo Lavrus",
@@ -17,6 +19,8 @@
     "@nestjs/core": "^9.4.2",
     "@nestjs/mongoose": "^9.2.2",
     "@nestjs/platform-express": "^9.4.2",
+    "dotenv": "^16.1.3",
+    "mongodb-migrate": "^2.0.2",
     "mongoose": "^7.2.2",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.8.1",

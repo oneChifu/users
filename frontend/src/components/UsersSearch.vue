@@ -1,6 +1,11 @@
 <template>
-  <v-row>
-    <v-col cols="3">
+  <v-row class="users-search">
+    <v-col
+      cols="12"
+      sm="6"
+      md="3"
+      lg="auto"
+    >
       <v-text-field
         v-model="searchQuery"
         label="Search"
@@ -13,7 +18,7 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex'
+import { mapActions } from 'vuex'
 
 export default {
   name: 'UsersSearch',
@@ -25,14 +30,8 @@ export default {
     }
   },
 
-  computed: {
-    ...mapState('users', ['users', 'total'])
-  },
-
-  created() {},
-
   methods: {
-    ...mapActions('users', ['fetchUsers', 'deleteUser']),
+    ...mapActions('users', ['fetchUsers']),
 
     searchUsers() {
       try {
@@ -45,3 +44,16 @@ export default {
   }
 }
 </script>
+
+<style lang="scss">
+@import '~vuetify/src/styles/settings/_variables';
+
+.users-search {
+  .col-lg-auto {
+    @media #{map-get($display-breakpoints, 'lg-and-up')} {
+      min-width: 20%;
+      max-width: 20%;
+    }
+  }
+}
+</style>
