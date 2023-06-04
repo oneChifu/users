@@ -1,6 +1,7 @@
-# USERS
+# USERS - CRUD
 
-## Simple Web App.
+My name is `Pavlo Lavrus` and this is simple full stack web app.
+
 
 ### Frontend
 
@@ -18,7 +19,6 @@ Before getting started with the project, make sure you have the following compon
 - Docker: [Instructions for installing Docker](https://www.docker.com/products/docker)
 - Docker Compose: [Instructions for installing Docker Compose](https://docs.docker.com/compose/)
 
-#
 
 ## Using Docker
 
@@ -28,14 +28,12 @@ If you have Docker and Docker Compose installed, you can use Docker to build and
 2. Run the command `docker-compose up -d` to run the project in daemon mode.
 3. Open your browser and go to `http://localhost:8080` to see your frontend project.
 
-#
 
 ## Directory Structure
 
 - `/frontend` - folder containing the frontend project.
 - `/server` - folder containing the server project.
 
-#
 
 ## Installation and Setup
 
@@ -68,7 +66,6 @@ yarn start:dev
 ```
 4. Open your browser and go to `http://localhost:8080` to see your frontend project.
 
-#
 
 ## License
 
