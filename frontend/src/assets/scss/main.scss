@@ -1,0 +1,16 @@
+/*
+/ Common styles with simple imports
+*/
+
+.v-application {
+  .v-btn {
+    text-transform: none;
+    letter-spacing: 0;
+
+    &:not(.v-btn--outlined) {
+      &.primary {
+        color: #564915;
+      }
+    }
+  }
+}
