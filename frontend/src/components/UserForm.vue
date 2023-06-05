@@ -191,7 +191,7 @@
         <ValidationProvider
           v-slot="{ errors }"
           name="State"
-          rules="required"
+          :rules="states.empty ? '' : 'required'"
           slim
         >
           <v-combobox
@@ -219,7 +219,7 @@
         <ValidationProvider
           v-slot="{ errors }"
           name="City"
-          rules="required"
+          :rules="cities.empty ? '' : 'required'"
           slim
         >
           <v-combobox
@@ -315,7 +315,7 @@ export default {
   props: {
     user: {
       type: Object,
-      default: () => {}
+      default: () => ({})
     },
 
     actions: {
@@ -335,7 +335,7 @@ export default {
       isLoading: false,
       isBirthDateMenu: false,
 
-      userData: {},
+      userData: this.user,
 
       countries: {
         loading: true,
@@ -395,7 +395,10 @@ export default {
     'userData.country': {
       handler(val, valOld) {
         if (valOld && val !== valOld && this.$refs.observerRef) {
+          this.userData.state = null
+          this.userData.city = null
           this.$refs.observerRef.refs.State.reset()
+          this.$refs.observerRef.refs.City.reset()
         }
 
         if (val) {
@@ -406,8 +409,9 @@ export default {
     },
 
     'userData.state': {
-      handler(val, valOld) {
+      async handler(val, valOld) {
         if (valOld && val !== valOld && this.$refs.observerRef) {
+          this.userData.city = null
           this.$refs.observerRef.refs.City.reset()
         }
 
@@ -420,7 +424,7 @@ export default {
   },
 
   created() {
-    this.userData = { ...this.user }
+    // this.userData = { ...this.user }
     this.fetchCountries()
   },
 
@@ -505,7 +509,7 @@ export default {
     },
 
     async submit() {
-      if (await !this.$refs.observerRef.validate()) return
+      if (!(await this.$refs.observerRef.validate())) return
 
       try {
         this.isLoading = true
