@@ -1,16 +1,14 @@
 {
   "name": "server",
   "version": "1.0.0",
-  "description": "Simple app Nest.js + Mongoose + MongoDB",
-  "dotenv_config_path": ".env",
+  "author": "Pavlo Lavrus - https://github.com/oneChifu/users",
+  "description": "Simple backend app Nest.js + Mongoose + MongoDB",
+  "license": "MIT",
   "scripts": {
     "dev": "nest start --watch",
     "start": "node dist/main.js",
     "build": "nest build"
   },
-  "keywords": [],
-  "author": "Pavlo Lavrus",
-  "license": "MIT",
   "dependencies": {
     "@nestjs/common": "^9.4.2",
     "@nestjs/config": "^2.3.2",
