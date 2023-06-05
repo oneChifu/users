@@ -1,20 +1,9 @@
-FROM node:14-alpine
-
-RUN apk add --no-cache yarn
-
-WORKDIR /app
-
-COPY package.json yarn.lock ./
-
-RUN yarn install
-
+FROM node:16-alpine
 RUN yarn global add @nestjs/cli
-
+WORKDIR /app
+COPY package*.json yarn.lock ./
+RUN yarn install
 COPY . .
-
-COPY .env* ./
-
+EXPOSE 3000
 RUN yarn build
-
-CMD ["yarn", "start:prod"]
-
+CMD [ "yarn", "start" ]

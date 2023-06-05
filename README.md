@@ -25,8 +25,11 @@ Before getting started with the project, make sure you have the following compon
 If you have Docker and Docker Compose installed, you can use Docker to build and run the project. Follow these steps:
 
 1. Open a terminal and navigate to the root folder of the project.
-2. Run the command `docker-compose up -d` to run the project in daemon mode.
-3. Open your browser and go to `http://localhost:8080` to see your frontend project.
+2. Run the command `docker-compose build --no-cache` to build the project.
+3. Run the command `docker-compose up -d` to run the project in daemon mode.
+4. Go to the server folder, run command `cd server/` and run migrate.js file by command `node migrate.js` for the database migrations of collections 
+5. Open your browser and go to `http://localhost:8080` to see your frontend project.
+6. To stop containers, run the `docker-compose down` command.
 
 
 ## Directory Structure
