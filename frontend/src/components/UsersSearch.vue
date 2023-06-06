@@ -7,7 +7,7 @@
       lg="auto"
     >
       <v-text-field
-        v-model="searchQuery"
+        v-model.trim="searchQuery"
         label="Search"
         clearable
         :loading="isLoading"
@@ -36,7 +36,7 @@ export default {
     searchUsers() {
       try {
         this.isLoading = true
-        this.fetchUsers({ firstName: this.searchQuery })
+        this.fetchUsers({ ...this.$route.query, search: this.searchQuery })
       } finally {
         this.isLoading = false
       }

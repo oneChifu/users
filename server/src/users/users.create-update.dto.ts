@@ -47,8 +47,8 @@ export class CreateUpdateDto {
   readonly address: string
 
   @IsNotEmpty()
-  @IsInt()
-  readonly pincode: number
+  @IsString()
+  readonly pincode: string
 
   validate(): string[] {
     const errors = validateSync(plainToClass(CreateUpdateDto, this), {

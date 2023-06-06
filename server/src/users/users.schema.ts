@@ -37,7 +37,7 @@ export class User {
   address: string
 
   @Prop({ required: true })
-  pincode: number
+  pincode: string
 
   @Prop({ default: Date.now })
   createdAt: number

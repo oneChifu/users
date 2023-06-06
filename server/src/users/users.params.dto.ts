@@ -21,6 +21,10 @@ export class ParamsDto {
   @IsString()
   readonly sortDesc?: boolean
 
+  @IsOptional()
+  @IsString()
+  readonly search?: string
+
   @IsString()
   readonly firstName: string
 
@@ -49,6 +53,6 @@ export class ParamsDto {
   @Max(80)
   readonly address: string
 
-  @IsInt()
-  readonly pincode: number
+  @IsString()
+  readonly pincode: string
 }

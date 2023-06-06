@@ -8,14 +8,20 @@ import { User, UserDocument } from './users.schema'
 export class UsersService {
   constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
 
-  async getUsers(
-    params: Record<string, any>
-  ): Promise<{ users: User[]; page: number; limit: number; total: number }> {
+  async getUsers(params: {
+    limit?: number
+    page?: number
+    sortBy?: string
+    sortDesc?: boolean
+    search?: string | number
+    [key: string]: any
+  }): Promise<{ users: User[]; page: number; limit: number; total: number }> {
     const {
-      limit = 5 as number,
-      page = 1 as number,
-      sortBy = 'id' as string,
+      limit = 5,
+      page = 1,
+      sortBy = 'id',
       sortDesc,
+      search,
       ...searchParams
     } = params
 
@@ -24,9 +30,23 @@ export class UsersService {
     const sortingDesc = !!sortDesc ? -1 : 1
     const query: FilterQuery<User> = {}
 
-    Object.entries(searchParams).forEach(([key, value]) => {
-      query[key] = new RegExp(value, 'i')
-    })
+    if (search && typeof search === 'string') {
+      const searchRegex = new RegExp(search.toString(), 'i')
+      query.$or = [
+        { firstName: { $regex: searchRegex } },
+        { lastName: { $regex: searchRegex } },
+        { email: { $regex: searchRegex } },
+        { country: { $regex: searchRegex } },
+        { state: { $regex: searchRegex } },
+        { city: { $regex: searchRegex } },
+        { address: { $regex: searchRegex } },
+        { pincode: { $regex: searchRegex } }
+      ]
+    } else {
+      Object.entries(searchParams).forEach(([key, value]) => {
+        query[key] = new RegExp(value, 'i')
+      })
+    }
 
     const total = await this.userModel.find(query).countDocuments().exec()
     const users = await this.userModel

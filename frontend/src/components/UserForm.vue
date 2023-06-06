@@ -335,7 +335,7 @@ export default {
       isLoading: false,
       isBirthDateMenu: false,
 
-      userData: this.user.id ? this.user : {},
+      userData: this.user.id ? { ...this.user } : {},
 
       countries: {
         loading: true,
@@ -532,7 +532,7 @@ export default {
     },
 
     reset() {
-      this.userData = this.user
+      this.userData = this.user.id ? { ...this.user } : {}
       this.$refs.observerRef.reset()
     }
   }
