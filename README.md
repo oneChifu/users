@@ -27,9 +27,8 @@ If you have Docker and Docker Compose installed, you can use Docker to build and
 1. Open a terminal and navigate to the root folder of the project.
 2. Run the command `docker-compose build --no-cache` to build the project.
 3. Run the command `docker-compose up -d` to run the project in daemon mode.
-4. cd server && yarn install
-4. Run migrate.js script by command `node server/migrate.js` for the database migrations of collections.
-5. Open your browser and go to `http://localhost:8080` to see your frontend project.
+4. Go to docker container `server` by command `docker exec -it server /bin/bash` and run `node migrate.js` command.
+5. Open your browser and go to `http://localhost:8080` to see frontend project.
 6. To stop containers, run the `docker-compose down` command.
 
 

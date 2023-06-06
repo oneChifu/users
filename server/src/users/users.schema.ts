@@ -44,4 +44,4 @@ export class User {
 }
 
 export const UserSchema = SchemaFactory.createForClass(User)
-UserSchema.plugin(AutoIncrementID, { field: 'id', start: 1 })
+UserSchema.plugin(AutoIncrementID, { field: 'id', startAt: 1 })
