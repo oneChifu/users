@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import { Model, FilterQuery } from 'mongoose'
-import { CreateUpdateUserDto } from './create-update-user.dto'
-import { User, UserDocument } from './user.schema'
+import { CreateUpdateDto } from './users.create-update.dto'
+import { User, UserDocument } from './users.schema'
 
 @Injectable()
 export class UsersService {
@@ -14,12 +14,14 @@ export class UsersService {
     const {
       limit = 5 as number,
       page = 1 as number,
-      sort = 'desc' as 'asc' | 'desc',
+      sortBy = 'id' as string,
+      sortDesc,
       ...searchParams
     } = params
 
     const skip = (page - 1) * limit
-    const sorting = sort === 'desc' ? -1 : 1
+    const sortingBy = !sortBy ? 'id' : sortBy
+    const sortingDesc = !!sortDesc ? -1 : 1
     const query: FilterQuery<User> = {}
 
     Object.entries(searchParams).forEach(([key, value]) => {
@@ -29,7 +31,7 @@ export class UsersService {
     const total = await this.userModel.find(query).countDocuments().exec()
     const users = await this.userModel
       .find(query)
-      .sort({ createdAt: sorting })
+      .sort({ [sortingBy]: sortingDesc })
       .skip(skip)
       .limit(limit)
       .exec()
@@ -41,18 +43,21 @@ export class UsersService {
     return this.userModel.findById(id).exec()
   }
 
-  async create(createUserDto: CreateUpdateUserDto): Promise<User> {
+  async create(
+    createUserDto: CreateUpdateDto
+  ): Promise<User | { errors: string[] }> {
     const createdUser = new this.userModel({
       ...createUserDto,
       createdAt: Date.now()
     })
+
     return createdUser.save()
   }
 
   async update(
     id: string,
-    updateUserDto: CreateUpdateUserDto
-  ): Promise<User | null> {
+    updateUserDto: CreateUpdateDto
+  ): Promise<User | { errors: string[] }> {
     return this.userModel
       .findByIdAndUpdate(id, updateUserDto, { new: true })
       .exec()

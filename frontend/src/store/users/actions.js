@@ -1,13 +1,14 @@
 import $http from '@/plugins/axios/'
 
 export default {
-  async fetchUsers({ commit }, params = {}) {
+  async fetchUsers({ commit }, { page, limit, sortDesc, sortBy, ...params }) {
     const { data } = await $http.get('/api/users', {
       params: {
         ...params,
-        page: params.page,
-        limit: params.limit,
-        sort: params.sort
+        page,
+        limit,
+        sortDesc: sortDesc || undefined,
+        sortBy: sortBy || undefined
       }
     })
     commit('setUsers', data)

@@ -18,7 +18,7 @@
           slim
         >
           <v-text-field
-            v-model="userData.firstName"
+            v-model.trim="userData.firstName"
             label="FirstName"
             :disabled="isLoading"
             :error-messages="errors"
@@ -39,7 +39,7 @@
           slim
         >
           <v-text-field
-            v-model="userData.lastName"
+            v-model.trim="userData.lastName"
             label="LastName"
             :disabled="isLoading"
             :error-messages="errors"
@@ -115,7 +115,7 @@
           slim
         >
           <v-text-field
-            v-model="userData.email"
+            v-model.trim="userData.email"
             label="Email ID"
             type="email"
             :disabled="isLoading"
@@ -168,7 +168,7 @@
           slim
         >
           <v-combobox
-            v-model="userData.country"
+            v-model.trim="userData.country"
             label="Country"
             :items="countries.items"
             item-text="name"
@@ -195,7 +195,7 @@
           slim
         >
           <v-combobox
-            v-model="userData.state"
+            v-model.trim="userData.state"
             ref="stateRef"
             label="State"
             :items="states.items"
@@ -223,7 +223,7 @@
           slim
         >
           <v-combobox
-            v-model="userData.city"
+            v-model.trim="userData.city"
             ref="cityRef"
             label="City"
             :items="cities.items"
@@ -247,11 +247,11 @@
         <ValidationProvider
           v-slot="{ errors }"
           name="Address"
-          rules="required|max:32"
+          rules="required|max:80"
           slim
         >
           <v-text-field
-            v-model="userData.address"
+            v-model.trim="userData.address"
             label="Address"
             :disabled="isLoading"
             :error-messages="errors"
@@ -272,7 +272,7 @@
           slim
         >
           <v-text-field
-            v-model="userData.pincode"
+            v-model.trim="userData.pincode"
             label="Pincode"
             :disabled="isLoading"
             :error-messages="errors"
@@ -335,7 +335,7 @@ export default {
       isLoading: false,
       isBirthDateMenu: false,
 
-      userData: this.user,
+      userData: this.user.id ? this.user : {},
 
       countries: {
         loading: true,
@@ -395,8 +395,8 @@ export default {
     'userData.country': {
       handler(val, valOld) {
         if (valOld && val !== valOld && this.$refs.observerRef) {
-          this.userData.state = null
-          this.userData.city = null
+          this.userData.state = undefined
+          this.userData.city = undefined
           this.$refs.observerRef.refs.State.reset()
           this.$refs.observerRef.refs.City.reset()
         }
@@ -411,7 +411,7 @@ export default {
     'userData.state': {
       async handler(val, valOld) {
         if (valOld && val !== valOld && this.$refs.observerRef) {
-          this.userData.city = null
+          this.userData.city = undefined
           this.$refs.observerRef.refs.City.reset()
         }
 
@@ -430,6 +430,10 @@ export default {
 
   mounted() {
     this.isMounted = true
+  },
+
+  beforeDestroy() {
+    this.userData = {}
   },
 
   methods: {
@@ -493,10 +497,9 @@ export default {
 
         this.cities.items = data
 
-        if (data.length <= 0) {
+        if (!data.length) {
           this.cities.empty = true
           this.userData.city = null
-          this.fetchCities()
         } else if (
           this.userData.city &&
           !data.find((e) => e.name === this.userData.city)
@@ -509,7 +512,8 @@ export default {
     },
 
     async submit() {
-      if (!(await this.$refs.observerRef.validate())) return
+      const valid = await this.$refs.observerRef.validate()
+      if (!valid) return
 
       try {
         this.isLoading = true
@@ -518,15 +522,17 @@ export default {
           ? await this.editUser(this.userData)
           : await this.createUser(this.userData)
 
-        this.reset()
         this.$emit('submit')
+        this.$nextTick(() => {
+          this.reset()
+        })
       } finally {
         this.isLoading = false
       }
     },
 
     reset() {
-      this.userData = { ...this.user }
+      this.userData = this.user
       this.$refs.observerRef.reset()
     }
   }

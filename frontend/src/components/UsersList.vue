@@ -5,12 +5,14 @@
     <v-data-table
       class="elevation-4"
       :headers="headers"
-      :items="users"
+      :items="items"
       :server-items-length.sync="total"
       :options.sync="options"
       :loading="isLoading"
+      must-sort
       @update:page="onUpdatePage"
       @update:items-per-page="onUpdateLimit"
+      @update:sort-desc="onUpdateSortDesc"
     >
       <template v-slot:top>
         <v-dialog
@@ -142,56 +144,58 @@ export default {
 
       userData: {},
 
+      options: {
+        page: parseFloat(this.$route.query.page) || 1,
+        itemsPerPage: parseFloat(this.$route.query.limit) || 5,
+        sortBy: ['id'],
+        sortDesc: [true]
+      },
+
       headers: [
+        {
+          text: 'ID',
+          align: 'start',
+          value: 'id'
+        },
         {
           text: 'FirstName',
           align: 'start',
-          sortable: false,
           value: 'firstName'
         },
         {
           text: 'LastName',
-          sortable: false,
           value: 'lastName'
         },
         {
           text: 'Date of Birth',
-          sortable: false,
           value: 'birthDate'
         },
         {
           text: 'Email Id',
-          sortable: false,
           value: 'email'
         },
         {
           text: 'Gender',
-          sortable: false,
           value: 'gender'
         },
         {
           text: 'Country',
-          sortable: false,
           value: 'country'
         },
         {
           text: 'State',
-          sortable: false,
           value: 'state'
         },
         {
           text: 'City',
-          sortable: false,
           value: 'city'
         },
         {
           text: 'Address',
-          sortable: false,
           value: 'address'
         },
         {
           text: 'Pincode',
-          sortable: false,
           value: 'pincode'
         },
         {
@@ -204,19 +208,16 @@ export default {
           sortable: false,
           value: 'delete'
         }
-      ],
-
-      options: {
-        page: parseFloat(this.$route.query.page) || 1,
-        itemsPerPage: parseFloat(this.$route.query.limit) || 5,
-        sortBy: 'createdAt',
-        sortDesc: true
-      }
+      ]
     }
   },
 
   computed: {
-    ...mapState('users', ['users', 'total'])
+    ...mapState('users', ['users', 'total']),
+
+    items() {
+      return this.users.slice(0, this.options.itemsPerPage)
+    }
   },
 
   created() {
@@ -227,13 +228,15 @@ export default {
     ...mapActions('users', ['fetchUsers', 'deleteUser']),
 
     async getUsers() {
-      const { page, itemsPerPage: limit } = this.options
+      const { page, itemsPerPage, sortDesc, sortBy } = this.options
 
       try {
         this.loading = true
         await this.fetchUsers({
           page,
-          limit
+          limit: itemsPerPage,
+          sortDesc: sortDesc[0],
+          sortBy: sortBy[0]
         })
       } finally {
         this.loading = false
@@ -247,6 +250,20 @@ export default {
 
     onUpdateLimit(limit) {
       this.$router.push({ query: { ...this.$route.query, limit } })
+      this.getUsers()
+    },
+
+    onUpdateSortDesc(sortDesc) {
+      const sortBy = this.options.sortBy[0]
+
+      this.$router.push({
+        query: {
+          ...this.$route.query,
+          'sortDesc': sortDesc ? true : undefined,
+          'sortBy': sortBy || undefined
+        }
+      })
+
       this.getUsers()
     },
 
